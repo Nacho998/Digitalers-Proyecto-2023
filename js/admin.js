@@ -9,17 +9,9 @@
      - id (automatico)
 */
 
-const formularioProductoHTML = document.getElementById('formularioProducto')
-
-formularioProductoHTML.addEventListener('submit', () => {
-
-    alert(`Evento submit`)
-
-})
-
-
 const consolas = [
     {
+        id: 'eec389d2-3d56-4b74-ae13-5d387a592048',
         descripcion: 'Consola de hogar con gráficos en alta definición.',
         titulo: 'PlayStation 5',
         fechaDeCreacion: '2020-11-12',
@@ -28,6 +20,7 @@ const consolas = [
         categoria: 'Consola de Hogar'
     },
     {
+        id: 'fc3025ec-f314-4b63-9765-1e8df3ee358a',
         descripcion: 'Consola portátil con pantalla táctil.',
         titulo: 'Nintendo Switch',
         fechaDeCreacion: '2017-03-03',
@@ -36,6 +29,7 @@ const consolas = [
         categoria: 'Consola Portátil'
     },
     {
+        id: '2e897bad-d4e4-413d-a515-ed95df9ad917',
         descripcion: 'Consola de hogar con alta potencia y compatibilidad hacia atrás.',
         titulo: 'Xbox Series X',
         fechaDeCreacion: '2020-11-10',
@@ -44,6 +38,7 @@ const consolas = [
         categoria: 'Consola de Hogar'
     },
     {
+        id: '5f49fab9-3135-4676-a160-5c3fdbb1ae92',
         descripcion: 'Consola clásica miniaturizada con juegos preinstalados.',
         titulo: 'NES Classic Edition',
         fechaDeCreacion: '2016-11-10',
@@ -53,23 +48,90 @@ const consolas = [
     }
 ];
 
+const formularioProductoHTML = document.getElementById('formularioProducto')
+const inputFiltrarHTML = document.getElementById('filtrar')
+
+// !LISTENER EVENTO FORMULARIO
+
+formularioProductoHTML.addEventListener('submit', (eventoEjecutado) => {
+    //formularioProductoHTML.elements.titulo.value
+
+    eventoEjecutado.preventDefault()
+
+    const el = formularioProductoHTML.elements
+
+    const nuevoProducto = {
+        titulo: el.titulo.value,
+        precio: el.precio.valueAsNumber,
+        categoria: el.categoria.value,
+        imagen: el.imagen.value,
+        descripcion: el.descripcion.value,
+        fechaDeCreacion: obtenerFecha()
+    }
+
+    consolas.push(nuevoProducto)
+    pintarProductos()
+    formularioProductoHTML.reset()
+    el.titulo.focus()
+})
+
+function obtenerFecha() {
+    const fecha = new Date()
+    let mes = fecha.getMonth() + 1
+    if(mes < 10) mes = '0' + mes
+    const year = fecha.getFullYear()
+    let dia = fecha.getDate()
+    if(dia < 10) dia = '0' + dia
+    const fechaFormateada = `${year}-${mes}-${dia}`
+
+    return fechaFormateada
+}
+
 const tableBodyHTML = document.querySelector('#table-body')
 
-consolas.forEach(function (consola) {
+function pintarProductos() {
 
-    tableBodyHTML.innerHTML +=
-        `<tr>
-        <td class="table-image">
-            <img src="${consola.imagen}"
-            alt="${consola.titulo}">
-        </td>
-        <td class="table-title">${consola.titulo}</td>
-        <td class="table-description">${consola.descripcion}</td>
-        <td class="table-price">${consola.precio}</td>
-        <td class="table-category">${consola.categoria}</td>
-    </tr>`
+    tableBodyHTML.innerHTML = ''
+
+    consolas.forEach(function (consola, index) {
+
+        tableBodyHTML.innerHTML +=
+            `<tr>
+                <td class="table-image">
+                    <img src="${consola.imagen}"
+                    alt="${consola.titulo}">
+                </td>
+                <td class="table-title">${consola.titulo}</td>
+                <td class="table-description">${consola.descripcion}</td>
+                <td class="table-price">${consola.precio}</td>
+                <td class="table-category">${consola.categoria}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="borrarProducto(${index})"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>`
+
+    })
+}
+
+pintarProductos()
+
+function borrarProducto(indiceRecibido) {
+
+    consolas.splice(indiceRecibido, 1)
+    pintarProductos()
+
+}
+
+inputFiltrarHTML.addEventListener('keyup', (evt) => {
+
+    console.log(evt.target.value)
 
 })
+
+
+
+
+
 
 /*
     1- Deberiamos obtener el body de mi elemnto HTML tbody
